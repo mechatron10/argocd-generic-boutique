@@ -1,0 +1,109 @@
+fullnameOverride: currencyservice
+
+
+# Service account configuration
+serviceAccount:
+  create: true
+  automount: false
+#  name: can provide the custom name other than service account name 
+
+initContainers:
+  create: false
+  config: 
+
+
+# Deplyment configuration
+envVariables:
+  PORT: "7000"
+  DISABLE_PROFILER: "1"
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 180Mi
+  limits:
+    cpu: 300m
+    memory: 300Mi
+
+# namespace
+namespace: botique
+
+imagePullPolicy: Always
+
+replicaCount: 1
+
+# imagePullSecrets: uncomment and set this value for setting te image pull secrets
+
+
+# podSecurityContext:
+#   enable: false
+#   config:
+#     fsGroup: 1000
+#     runAsGroup: 1000
+#     runAsNonRoot: true
+#     runAsUser: 1000
+#     seccompProfile:
+#       type: RuntimeDefault
+
+# securityContext:
+#   enable: false
+#   config:
+#     allowPrivilegeEscalation: false
+#     capabilities:
+#     drop:
+#       - ALL
+#     privileged: false
+#     readOnlyRootFilesystem: true
+  
+image:
+  repository: us-central1-docker.pkg.dev/online-boutique-ci/microservices-demo/currencyservice
+  tag: "v0.10.6"
+
+
+
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  grpc:
+    port: 7000
+
+readinessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  grpc:
+    port: 7000
+
+
+
+# autoscaling configuration
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 30
+  targetCPUUtilizationPercentage: 12 
+
+containerPort: 7000 
+
+
+# Service configuration
+
+service:
+  portname: grpc
+  port: 7000
+  type: ClusterIP
+
+
+# networking configuration defines the network policies for the service. If you want to create network policies, set the value of create to true and define the ingress and egress rules. If you don't want to create network policies, set the value of create to false.
+networkPolicies:
+  create: false
+
+
+# authorization policies configuration defines the authorization policies for the service. If you want to create authorization policies, set the value of create to true and define the rules. If you don't want to create authorization policies, set the value of create to false.
+authoriztionPolicies:
+  create: false
+
+sidecars:
+  create: false

@@ -1,0 +1,22 @@
+# To mount the environment variables as a file in containers, uncomment the following ConfigMap template and add the necessary values in your values.yaml file. This will create a ConfigMap that contains the environment variables defined in your Helm chart.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "generic.fullname" . }}
+data:
+  {{- range $key, $value := .Values.envVariables }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+
+
+
+# To mount the environment variables as a file in containers, uncomment the following ConfigMap template and add the necessary values in your values.yaml file. This will create a ConfigMap that contains the environment variables defined in your Helm chart.
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: generic.fullname
+# data:
+#   env.conf: |
+#     {{- range .Values.envVariables }}
+#     {{ . }}
+#     {{- end }}

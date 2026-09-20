@@ -1,0 +1,129 @@
+# this will define the values of the redis service for the cart service. The values defined here will be used in the redis deployment and service yaml files.
+
+
+fullnameOverride: redis-cart
+
+# Service account configuration , the name of the servive account will be the same as the service name by default. If you want to provide a custom name for the service account, set the #value of name to the desired name. If you don't want to create a service account, set the value of create to false.
+
+serviceAccount:
+  create: true
+  automount: false
+#  name: can provide the custom name other than service  name 
+
+#configuration of the init containers. If you want to create init containers, set the value of create to true and define the configuration of the init containers in the config key. If you don't want to create init containers, set the value of create to false.
+initContainers:
+  create: false
+  config: 
+
+
+
+# Deplyment configuration
+envVariables:
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 180Mi
+  limits:
+    cpu: 300m
+    memory: 300Mi
+
+# namespace
+namespace: botique
+
+imagePullPolicy: Always
+
+replicaCount: 1
+
+# imagePullSecrets: uncomment and set this value for setting te image pull secrets
+
+
+# Configure the pod security context and security context for the service. If you want to provide custom values for the pod security context and security context, set the values of podSecurityContext and securityContext to the desired values. If you don't want to provide custom values, set the values of podSecurityContext and securityContext to null.
+# podSecurityContext:
+#   fsGroup: 1000
+#   runAsGroup: 1000
+#   runAsNonRoot: true
+#   runAsUser: 1000
+#   seccompProfile:
+#     type: RuntimeDefault
+
+# securityContext:
+#   allowPrivilegeEscalation: false
+#   capabilities:
+#   drop:
+#     - ALL
+#   privileged: false
+#   readOnlyRootFilesystem: true
+  
+# either provide the image tag or the image hash. If both are provided, the image hash will be used.
+image:
+  repository: redis:alpine
+  tag: 
+  hash: 9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
+
+
+
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  tcpSocket:
+    port: 6379
+
+readinessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  tcpSocket:
+    port: 6379
+
+
+
+# autoscaling configuration
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 30
+  targetCPUUtilizationPercentage: 12 
+
+containerPort: 6379
+
+
+# Service configuration
+
+service:
+  portname: tcp-redis
+  port: 6379
+  type: ClusterIP
+
+
+# networking configuration defines the network policies for the service. If you want to create network policies, set the value of create to true and define the ingress and egress rules. If you don't want to create network policies, set the value of create to false.
+networkPolicies:
+  create: false
+
+
+# authorization policies configuration defines the authorization policies for the service. If you want to create authorization policies, set the value of create to true and define the rules. If you don't want to create authorization policies, set the value of create to false.
+authorizationPolicies:
+  create: false
+
+sidecars:
+  create: false
+
+
+# configure the volume mounts below and make sure to provide each volume as a list using the dash (-) in the volumes section below. If you don't want to create any volume mounts, set the value of volumeMounts to null.
+
+volumeMounts:
+  - mountPath: "/data"
+    name: "redis-data"
+
+volumes:
+  - name: "redis-data"
+    emptyDir: {}
+
+
+
+
+
+
+

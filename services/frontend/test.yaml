@@ -1,0 +1,126 @@
+fullnameOverride: frontend
+
+
+# Service account configuration
+serviceAccount:
+  create: true
+  automount: false
+#  name: can provide the custom name other than service account name 
+
+initContainers:
+  create: false
+  config:
+
+# Deplyment configuration
+envVariables:
+  PORT: "8080"
+  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+  CURRENCY_SERVICE_ADDR: "currencyservice:7000"
+  CART_SERVICE_ADDR: "cartservice:7070"
+  RECOMMENDATION_SERVICE_ADDR: "recommendationservice:8080"
+  SHIPPING_SERVICE_ADDR: "shippingservice:50051"
+  CHECKOUT_SERVICE_ADDR: "checkoutservice:5050"
+  AD_SERVICE_ADDR: "adservice:9555"
+  SHOPPING_ASSISTANT_SERVICE_ADDR: "shoppingassistantservice:80"
+  ENV_PLATFORM: "local" 
+  CYMBAL_BRANDING: "false" 
+  ENABLE_ASSISTANT: "false" 
+  ENABLE_SINGLE_SHARED_SESSION: "false" 
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 180Mi
+  limits:
+    cpu: 300m
+    memory: 300Mi
+
+# namespace
+namespace: botique
+
+imagePullPolicy: Always
+
+replicaCount: 1
+
+# imagePullSecrets: uncomment and set this value for setting te image pull secrets
+
+
+# podSecurityContext:
+#   enable: false
+#   config:
+#     fsGroup: 1000
+#     runAsGroup: 1000
+#     runAsNonRoot: true
+#     runAsUser: 1000
+#     seccompProfile:
+#       type: RuntimeDefault
+
+# securityContext:
+#   enable: false
+#   config:
+#     allowPrivilegeEscalation: false
+#     capabilities:
+#     drop:
+#       - ALL
+#     privileged: false
+#     readOnlyRootFilesystem: true
+  
+image:
+  repository: us-central1-docker.pkg.dev/online-boutique-ci/microservices-demo/frontend
+  tag: "v0.10.6"
+
+
+
+livenessProbe:
+  initialDelaySeconds: 10
+  httpGet:
+    path: "/_healthz"
+    port: 8080
+    httpHeaders:
+      - name: "Cookie"
+        value: "shop_session-id=x-liveness-probe"
+
+readinessProbe:
+  initialDelaySeconds: 10
+  httpGet:
+    path: "/_healthz"
+    port: 8080
+    httpHeaders:
+      - name: "Cookie"
+        value: "shop_session-id=x-readiness-probe"
+
+
+
+
+# autoscaling configuration
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 30
+  targetCPUUtilizationPercentage: 12 
+
+containerPort: 8080 
+
+
+# Service configuration
+
+service:
+  portname: http
+  port: 80
+  type: ClusterIP
+
+
+# networking configuration defines the network policies for the service. If you want to create network policies, set the value of create to true and define the ingress and egress rules. If you don't want to create network policies, set the value of create to false.
+networkPolicies:
+  create: false
+
+
+# authorization policies configuration defines the authorization policies for the service. If you want to create authorization policies, set the value of create to true and define the rules. If you don't want to create authorization policies, set the value of create to false.
+authoriztionPolicies:
+  create: false
+
+sidecars:
+  create: false

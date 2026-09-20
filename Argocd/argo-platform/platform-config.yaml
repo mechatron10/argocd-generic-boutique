@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: botique-project
+  namespace: argocd
+spec:
+  description: "This project is responsible for managing the microservices of the botique application"
+  
+  sourceRepos:
+    - https://github.com/mechatron10/ArgoCD.git
+
+  destinations:
+    - namespace: botique
+      server: https://kubernetes.default.svc 
+
+  clusterResourceWhitelist: # the cluster scoped resources are given the permissions as below namespace is a cluster scoped resource and hence it is defined in the clusterresource whitelist
+    - group: ""
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+  - group: ""
+    kind: Pod
+  - group: apps
+    kind: Deployment
+  - group: apps
+    kind: ReplicaSet
+  - group: ""
+    kind: ConfigMap
+  - group: ""
+    kind: Secret
+  - group: ""
+    kind: Service
+  - group: "batch"
+    kind: Job
+
+  clusterResourceBlacklist:  # the other cluster resources which are not whitelisted are denied the permissions by default there is no need of explicitily denying the permissions  
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleBinding
+  roles:
+  - name: dev-readonly
+    description: Read-only access for developers
+    policies:
+      - p, proj:app1-projection-dev-readonly,applications,get,app1-project/*,allow
+    groups:
+      - app1-devs
+  - name: platform-engineer
+    description: Read-only access for developers
+    policies:
+      - p, proj:app1-projection-dev-readonly,applications,*,app1-project/*,allow
+    groups:
+      - app1-devs

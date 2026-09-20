@@ -1,0 +1,1 @@
+A GitOps demonstration showcasing Argo CD by deploying the Google Cloud Online Boutique. Features a consolidated, highly reusable generic Helm chart that drives all microservices via a central values.yaml structure to eliminate manifest duplication.

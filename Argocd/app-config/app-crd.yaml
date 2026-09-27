@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: boutique-microservices
+  namespace: argocd
+spec:
+  # 1. The Generator maps all your services into variables
+  generators:
+    - list:
+        elements:
+          - service: adservice
+          - service: cartservice
+          - service: checkoutservice
+#          - service: common
+          - service: currencyservice
+          - service: emailservice
+          - service: frontend
+          - service: loadgenerator
+#          - service: opentelemetry-collector
+          - service: paymentservice
+          - service: productcatalogservice
+          - service: recommendationservice
+          - service: shippingservice
+  
+  # 2. The Template dynamically generates a unique Application CRD for each list item
+  template:
+    metadata:
+      # Dynamically names applications: boutique-adservice, boutique-frontend, etc.
+      name: boutique-{{service}}
+    spec:
+      project: botique-project
+      
+      # Multiple sources layout referencing your exact directory structures
+      sources:
+        # Source A: The static, shared generic Helm chart templates
+        - repoURL: https://github.com/mechatron10/argocd-generic-boutique.git
+          targetRevision: HEAD
+          path: argocd-generic-boutique/generic/
+          helm:
+            valueFiles:
+              # Dynamically matches each specific service's path
+              - $values/argocd-generic-boutique/services/{{service}}/test.yaml
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: botique
+      
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

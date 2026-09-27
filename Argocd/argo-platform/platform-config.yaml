@@ -7,7 +7,7 @@ spec:
   description: "This project is responsible for managing the microservices of the botique application"
   
   sourceRepos:
-    - https://github.com/mechatron10/ArgoCD.git
+    - https://github.com/mechatron10/argocd-generic-boutique.git
 
   destinations:
     - namespace: botique

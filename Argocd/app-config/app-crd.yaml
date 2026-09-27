@@ -8,7 +8,7 @@ spec:
   generators:
     - list:
         elements:
-          - service: adservice
+          - service: addservice
           - service: cartservice
           - service: checkoutservice
 #          - service: common
@@ -36,11 +36,11 @@ spec:
         # Source A: The static, shared generic Helm chart templates
         - repoURL: https://github.com/mechatron10/argocd-generic-boutique.git
           targetRevision: HEAD
-          path: argocd-generic-boutique/generic/
+          path: generic/
           helm:
             valueFiles:
               # Dynamically matches each specific service's path
-              - $values/argocd-generic-boutique/services/{{service}}/test.yaml
+              - ../services/{{service}}/test.yaml
 
       destination:
         server: https://kubernetes.default.svc

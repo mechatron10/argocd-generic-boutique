@@ -32,6 +32,8 @@ spec:
     kind: Service
   - group: "batch"
     kind: Job
+  - group: ""
+    kind: "ServiceAccount"
 
   clusterResourceBlacklist:  # the other cluster resources which are not whitelisted are denied the permissions by default there is no need of explicitily denying the permissions  
   - group: rbac.authorization.k8s.io

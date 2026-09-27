@@ -21,6 +21,7 @@ spec:
           - service: productcatalogservice
           - service: recommendationservice
           - service: shippingservice
+          - service: redis-cart
   
   # 2. The Template dynamically generates a unique Application CRD for each list item
   template:
